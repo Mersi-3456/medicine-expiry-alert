@@ -5,14 +5,12 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Medicine Expiry Alert System - CI/CD'
-                echo 'Code checked out from GitHub'
+                echo 'Checking out Medicine Expiry Alert System'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker --version'
                 bat 'docker build -t mersineelakantam/medicine-expiry-alert:%BUILD_NUMBER% -t mersineelakantam/medicine-expiry-alert:latest .'
             }
         }
@@ -31,14 +29,21 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                bat 'kubectl set image deployment/medicine-app medicine-app=mersineelakantam/medicine-expiry-alert:%BUILD_NUMBER%'
+                bat 'kubectl rollout status deployment/medicine-app --timeout=120s'
+            }
+        }
     }
 
     post {
         success {
-            echo 'Docker image built and pushed successfully!'
+            echo 'CI/CD completed successfully!'
         }
         failure {
-            echo 'Pipeline failed. Check the Console Output.'
+            echo 'Pipeline failed. Check Console Output.'
         }
     }
 }
