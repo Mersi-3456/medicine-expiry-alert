@@ -1,0 +1,13 @@
+
+{% extends "base.html" %}
+{% block content %}
+<h2>Expiry Alerts</h2>
+{% for m in medicines %}
+<p>
+<strong>{{ m.name }}</strong> -
+{{ m.expiry }} - {{ get_status(m) }}
+</p>
+{% else %}
+<p>No expiry alerts.</p>
+{% endfor %}
+{% endblock %}

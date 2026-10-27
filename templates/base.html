@@ -1,0 +1,507 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedGuard | Medicine Expiry Alert System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f4f7fb;
+            color: #243047;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 245px;
+            background: #142b4a;
+            color: white;
+            padding: 28px 18px;
+            flex-shrink: 0;
+        }
+
+        .brand {
+            font-size: 25px;
+            font-weight: 800;
+            margin: 4px 10px 8px;
+            letter-spacing: -1px;
+        }
+
+        .brand span {
+            color: #43dfb5;
+        }
+
+        .brand-subtitle {
+            color: #a8bad0;
+            font-size: 12px;
+            margin: 0 10px 36px;
+        }
+
+        .nav-label {
+            color: #8ea4bf;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            margin: 25px 12px 12px;
+            text-transform: uppercase;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #cfdaea;
+            padding: 13px 14px;
+            border-radius: 10px;
+            margin-bottom: 7px;
+            transition: 0.2s;
+            font-size: 14px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: #28496e;
+            color: #ffffff;
+        }
+
+        .nav-link.active {
+            border-left: 3px solid #43dfb5;
+        }
+
+        .sidebar-bottom {
+            margin-top: 55px;
+            padding: 16px;
+            border-radius: 12px;
+            background: #203d5e;
+            font-size: 12px;
+            line-height: 1.7;
+            color: #d3e2f1;
+        }
+
+        .main {
+            flex: 1;
+            min-width: 0;
+            padding: 30px 36px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 32px;
+        }
+
+        .topbar h2 {
+            font-size: 24px;
+            color: #172c48;
+        }
+
+        .topbar p {
+            color: #8290a5;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        .profile {
+            background: white;
+            border: 1px solid #e7edf4;
+            border-radius: 12px;
+            padding: 11px 15px;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .page-heading {
+            margin-bottom: 25px;
+        }
+
+        .page-heading h1 {
+            font-size: 29px;
+            color: #172c48;
+            margin-bottom: 8px;
+        }
+
+        .page-heading p {
+            color: #8290a5;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 16px;
+            border: 1px solid #e8edf4;
+            box-shadow: 0 5px 18px rgba(30, 55, 90, 0.035);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-icon {
+            width: 43px;
+            height: 43px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            font-size: 22px;
+        }
+
+        .purple { background: #eee9ff; }
+        .red { background: #ffe8e8; }
+        .orange { background: #fff0d9; }
+        .green { background: #ddf8ec; }
+
+        .stat-label {
+            color: #7e8ba0;
+            font-size: 13px;
+            margin-top: 18px;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 750;
+            margin-top: 7px;
+            color: #1c304c;
+        }
+
+        .stat-note {
+            font-size: 11px;
+            margin-top: 8px;
+            color: #8794a7;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 22px;
+            margin-bottom: 25px;
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid #e8edf4;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 5px 18px rgba(30, 55, 90, 0.035);
+            min-width: 0;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 23px;
+        }
+
+        .panel-header h3 {
+            font-size: 16px;
+            color: #243751;
+        }
+
+        .panel-header a {
+            color: #168b80;
+            font-size: 12px;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .chart-row {
+            display: grid;
+            grid-template-columns: 110px 1fr 30px;
+            gap: 12px;
+            align-items: center;
+            margin: 22px 0;
+            font-size: 12px;
+        }
+
+        .chart-label {
+            color: #65748a;
+        }
+
+        .bar-track {
+            background: #eef2f7;
+            height: 10px;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .bar {
+            height: 100%;
+            border-radius: 20px;
+            min-width: 0;
+        }
+
+        .bar-safe { background: #25b989; }
+        .bar-soon { background: #f4aa43; }
+        .bar-expired { background: #ed626c; }
+
+        .chart-number {
+            text-align: right;
+            font-weight: 700;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 15px 0;
+            border-bottom: 1px solid #edf1f6;
+        }
+
+        .alert-item:last-child {
+            border-bottom: none;
+        }
+
+        .alert-symbol {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border-radius: 11px;
+            background: #fff0e5;
+            font-size: 19px;
+            flex-shrink: 0;
+        }
+
+        .alert-item h4 {
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .alert-item p {
+            font-size: 12px;
+            color: #8390a3;
+            line-height: 1.6;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status-safe {
+            background: #dcf8eb;
+            color: #16845e;
+        }
+
+        .status-soon {
+            background: #fff0d6;
+            color: #a96908;
+        }
+
+        .status-expired {
+            background: #ffe4e6;
+            color: #c33145;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            text-align: left;
+            color: #7d8ba0;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            padding: 14px 12px;
+            background: #f7f9fc;
+        }
+
+        td {
+            padding: 16px 12px;
+            border-bottom: 1px solid #edf1f6;
+        }
+
+        tbody tr:hover {
+            background: #f9fbfd;
+        }
+
+        .medicine-name {
+            font-weight: 700;
+            color: #263b56;
+        }
+
+        .empty-state {
+            padding: 25px 0;
+            text-align: center;
+            color: #7d8ba0;
+            font-size: 13px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 11px;
+            color: #9aa6b6;
+        }
+
+        @media (max-width: 1100px) {
+            .stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .main {
+                padding: 25px 22px;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .layout {
+                display: block;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 18px;
+            }
+
+            .brand-subtitle {
+                margin-bottom: 15px;
+            }
+
+            .nav-label, .sidebar-bottom {
+                display: none;
+            }
+
+            .sidebar nav {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .nav-link {
+                margin: 0;
+                padding: 10px;
+                font-size: 12px;
+            }
+
+            .main {
+                padding: 22px 14px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-number {
+                font-size: 27px;
+            }
+
+            .topbar h2 {
+                font-size: 19px;
+            }
+
+            .profile {
+                font-size: 11px;
+                padding: 9px;
+            }
+
+            .page-heading h1 {
+                font-size: 24px;
+            }
+
+            .panel {
+                padding: 17px;
+            }
+
+            .chart-row {
+                grid-template-columns: 85px 1fr 22px;
+                gap: 7px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="layout">
+
+    <aside class="sidebar">
+        <div class="brand">✚ Med<span>Guard</span></div>
+        <div class="brand-subtitle">SMART MEDICINE MANAGEMENT</div>
+
+        <div class="nav-label">MAIN MENU</div>
+
+        <nav>
+            <a class="nav-link {% if request.path == '/' %}active{% endif %}"
+               href="/">▦ Dashboard</a>
+
+            <a class="nav-link {% if request.path == '/medicines' %}active{% endif %}"
+               href="/medicines">▤ Medicine Inventory</a>
+
+            <a class="nav-link {% if request.path == '/alerts' %}active{% endif %}"
+               href="/alerts">⚠ Expiry Alerts</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <strong>🛡 Medicine Safety</strong><br>
+            Track expiry dates and identify medicines that need attention.
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div>
+                <h2>Medicine Management</h2>
+                <p>Monitor your inventory and expiry status</p>
+            </div>
+            <div class="profile">👤 Admin Dashboard</div>
+        </header>
+
+        {% block content %}{% endblock %}
+
+        <div class="footer">
+            MedGuard · Medicine Expiry Alert System · Academic Project
+        </div>
+    </main>
+
+</div>
+</body>
+</html>

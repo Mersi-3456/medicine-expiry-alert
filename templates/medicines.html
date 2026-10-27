@@ -1,0 +1,18 @@
+
+{% extends "base.html" %}
+{% block content %}
+<h2>Medicine Inventory</h2>
+<table border="1" cellpadding="8">
+<tr><th>Name</th><th>Batch</th><th>Quantity</th>
+<th>Expiry Date</th><th>Status</th></tr>
+{% for m in medicines %}
+<tr>
+<td>{{ m.name }}</td>
+<td>{{ m.batch }}</td>
+<td>{{ m.quantity }}</td>
+<td>{{ m.expiry }}</td>
+<td>{{ get_status(m) }}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}
